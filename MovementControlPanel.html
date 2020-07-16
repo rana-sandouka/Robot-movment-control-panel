@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+.button {
+  background-color: #3CB371; /* Green */
+  border: none;
+  color: white;
+  padding: 10px 29px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 5px 20px;
+  transition-duration: 0.4s;
+  cursor: pointer;
+  border-radius: 12px;
+}
+
+.button1 {
+  background-color: white; 
+  color: black; 
+  border: 2px solid #3CB371;
+}
+
+.button1:hover {
+  background-color: #3CB371;
+  color: white;
+}
+
+.Lpostion{
+position:fixed; left:10px; top:250px; 
+}
+
+
+.Rpostion{
+position:fixed; left:10px; top:175px; 
+}
+
+.Dpostion{
+position:fixed; left:10px; top:325px; 
+}
+
+.UpostionT{
+position:fixed; left:150px; top:100px; 
+}
+
+.LpostionT{
+position:fixed; left:150px; top:175px; 
+}
+
+.RpostionT{
+position:fixed; left:150px; top:250px; 
+}
+
+
+.DpostionT{
+position:fixed; left:150px; top:325px; 
+}
+.BoxPostion{
+position:fixed; left:500px; top:100px; 
+}
+input[type=text] {
+  width: 15%;
+  padding: 10px 3px;
+  margin: 8px 0;
+  box-sizing: border-box;
+  border-radius: 12px;
+  border: 2px solid #3CB371;
+}
+
+</style>
+</head>
+<body>
+
+<h2>Robot Control Panel</h2>
+<p> <strong> Choose your robot movement direction. <strong></p>
+<form>
+
+
+<button type="button" class="button button1" onclick="myFunction('f')">Up</button>
+<input class="UpostionT" type="text" id="f" name="f">
+
+<button type="button" class="button button1 Rpostion" onclick="myFunction('r')">Right</button>
+<input class="LpostionT" type="text" id="r" name="r">
+
+
+<button type="button" class="button button1 Lpostion" onclick="myFunction('l')">Left</button>
+<input class="RpostionT" type="text" id="l" name="l">
+
+<button type="button" class="button button1 Dpostion" onclick="myFunction('d')">Down</button>
+<input class="DpostionT" type="text" id="d" name="d">
+
+</form>
+
+<div >
+     <canvas class="BoxPostion" id="myCanvas" width="400" height="400" style="border:1px solid #7f7f7f ;"></canvas>
+                </div>
+
+
+<script>
+                var x = 200;
+                var y = 200;
+                var arr = [];
+                var obj = {};
+                
+                function myFunction(dir) {
+                    var input = document.getElementById(dir).value;
+                    var c = document.getElementById("myCanvas");
+                    var ctx = c.getContext("2d");
+                    switch(dir) {
+                        case 'f':
+                            obj.dir = 'F';
+                            obj.val = input;
+                            arr.push(obj);
+                        
+                            ctx.beginPath();
+                            ctx.moveTo(x, y);
+                            y=y-input;
+                            ctx.lineTo(x, y);
+                            ctx.lineTo(x-5, y+5);
+                            ctx.lineTo(x, y);
+                            ctx.lineTo(x+5, y+5);
+                            ctx.moveTo(x, y);
+                            ctx.stroke();
+                            break;
+
+                        case 'l':
+                            obj.dir = 'L';
+                            obj.val = input;
+                            arr.push(obj);
+                            
+                            ctx.beginPath();
+                            ctx.moveTo(x, y);
+                            x=x-input;
+                            ctx.lineTo(x, y);
+                            ctx.lineTo(x+5, y+5);
+                            ctx.lineTo(x, y);
+                            ctx.lineTo(x+5, y-5);
+                            ctx.moveTo(x, y);
+                            ctx.stroke();
+                            break;
+
+                        case 'r':
+                            obj.dir = 'R';
+                            obj.val = input;
+                            arr.push(obj);
+
+                            ctx.beginPath();
+                            ctx.moveTo(x, y);
+                            x=x+(parseInt(input));
+                            ctx.lineTo(x, y);
+                            ctx.lineTo(x-5, y+5);
+                            ctx.lineTo(x, y);
+                            ctx.lineTo(x-5, y-5);
+                            ctx.moveTo(x, y);
+                            ctx.stroke();
+                            break;
+
+                        case 'd':
+                            obj.dir = 'D';
+                            obj.val = input;
+                            arr.push(obj);
+
+                            ctx.beginPath();
+                            ctx.moveTo(x, y);
+                            y=y+(parseInt(input));
+                            ctx.lineTo(x, y);
+                            ctx.lineTo(x-5, y-5);
+                            ctx.lineTo(x, y);
+                            ctx.lineTo(x+5, y-5);
+                            ctx.moveTo(x, y);
+                            ctx.stroke();
+                            break;
+                    }
+                    
+                }
+
+                function save() {
+                    $.ajax({ 
+                        type: "POST", 
+                        url: "insert.php", 
+                        data: { paths : JSON.stringify(arr)}, 
+                        success: function() { 
+                                alert("Success"); 
+                            } 
+                    }); 
+                    //location.reload();
+                }
+
+                function reset(){
+                    arr=[];
+                    location.reload();
+                }
+
+                
+            </script>
+</body>
+</html>
